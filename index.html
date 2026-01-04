@@ -740,31 +740,274 @@
         /* Responsive */
         @media (max-width: 768px) {
             .container {
-                padding: 10px;
+                padding: 8px;
             }
 
             .header {
-                padding: 20px 10px;
+                padding: 10px 5px;
+                margin-bottom: 10px;
+            }
+
+            .header h1 {
+                font-size: 1.8rem;
+                letter-spacing: 2px;
+            }
+
+            .header p {
+                font-size: 0.85rem;
+                margin-top: 3px;
             }
 
             .setup-screen {
-                padding: 25px;
+                padding: 20px 15px;
+            }
+
+            .setup-section {
+                margin-bottom: 20px;
+            }
+
+            .setup-section h2 {
+                font-size: 1rem;
+                margin-bottom: 12px;
+            }
+
+            .mode-btn {
+                padding: 15px 10px;
+                font-size: 1.5rem;
+            }
+
+            .mode-btn span {
+                font-size: 0.7rem;
             }
 
             .game-modes {
-                flex-direction: column;
+                flex-direction: row;
+                gap: 10px;
             }
 
-            .numpad {
-                grid-template-columns: repeat(4, 1fr);
+            .player-input-group input {
+                padding: 12px 15px;
+                font-size: 1rem;
+            }
+
+            .start-game-btn {
+                padding: 15px;
+                font-size: 1.1rem;
+            }
+
+            /* Game screen mobile */
+            .game-header {
+                margin-bottom: 10px;
+                padding: 0 5px;
+            }
+
+            .game-title {
+                font-size: 1.2rem;
+            }
+
+            .round-counter {
+                font-size: 0.9rem;
+            }
+
+            .game-header .btn {
+                padding: 8px 15px;
+                font-size: 0.85rem;
+            }
+
+            /* Compact scoreboard - horizontal on mobile */
+            .scoreboard {
+                display: flex;
+                flex-direction: row;
+                gap: 8px;
+                margin-bottom: 10px;
+                overflow-x: auto;
+                padding-bottom: 5px;
+            }
+
+            .player-card {
+                min-width: 140px;
+                flex: 1;
+                padding: 12px 10px;
+                border-radius: 12px;
+            }
+
+            .player-card.active {
+                transform: scale(1.02);
+            }
+
+            .player-card-header {
+                margin-bottom: 5px;
+            }
+
+            .player-card-name {
+                font-size: 0.9rem;
+            }
+
+            .turn-indicator {
+                padding: 2px 8px;
+                font-size: 0.65rem;
             }
 
             .player-score {
-                font-size: 3rem;
+                font-size: 2.2rem;
+                margin: 8px 0;
             }
 
-            .scoreboard {
-                grid-template-columns: 1fr;
+            .player-stats {
+                padding-top: 8px;
+                gap: 10px;
+            }
+
+            .stat-value {
+                font-size: 1rem;
+            }
+
+            .stat-label {
+                font-size: 0.6rem;
+            }
+
+            .checkout-hint {
+                padding: 6px 10px;
+                margin-top: 8px;
+            }
+
+            .checkout-hint-label {
+                font-size: 0.65rem;
+            }
+
+            .checkout-hint-value {
+                font-size: 0.85rem;
+            }
+
+            .history-list {
+                max-height: 30px;
+                margin-top: 8px;
+            }
+
+            .history-item {
+                padding: 2px 5px;
+                font-size: 0.7rem;
+            }
+
+            /* Compact input panel */
+            .input-panel {
+                padding: 15px 10px;
+                border-radius: 12px;
+            }
+
+            .input-panel h3 {
+                font-size: 0.95rem;
+                margin-bottom: 8px;
+            }
+
+            .current-throw {
+                margin-bottom: 10px;
+            }
+
+            .current-throw-value {
+                font-size: 2rem;
+            }
+
+            .quick-scores {
+                gap: 5px;
+                margin-bottom: 10px;
+            }
+
+            .quick-score-btn {
+                padding: 6px 10px;
+                font-size: 0.85rem;
+            }
+
+            .numpad {
+                grid-template-columns: repeat(6, 1fr);
+                gap: 6px;
+                margin-bottom: 10px;
+            }
+
+            .numpad-btn {
+                padding: 12px 8px;
+                font-size: 1rem;
+                border-radius: 8px;
+            }
+
+            .action-buttons {
+                gap: 8px;
+            }
+
+            .btn-submit, .btn-bust, .btn-undo {
+                padding: 12px 15px;
+                font-size: 0.9rem;
+            }
+
+            .btn-undo {
+                flex: 0.8;
+                min-width: 70px;
+            }
+
+            .btn-bust {
+                flex: 0.8;
+                min-width: 70px;
+            }
+
+            .btn-submit {
+                flex: 1.5;
+                min-width: 100px;
+            }
+
+            /* Modal mobile */
+            .modal {
+                padding: 30px 20px;
+                margin: 20px;
+            }
+
+            .modal .trophy {
+                font-size: 4rem;
+            }
+
+            .modal h2 {
+                font-size: 1.8rem;
+            }
+
+            .modal .winner-name {
+                font-size: 1.4rem;
+            }
+        }
+
+        /* Hide header during game on mobile */
+        @media (max-width: 768px) {
+            .header.game-active {
+                display: none;
+            }
+        }
+
+        /* Extra small screens */
+        @media (max-width: 380px) {
+            .header h1 {
+                font-size: 1.5rem;
+            }
+
+            .player-score {
+                font-size: 1.8rem;
+            }
+
+            .player-card {
+                min-width: 120px;
+                padding: 10px 8px;
+            }
+
+            .numpad {
+                grid-template-columns: repeat(6, 1fr);
+                gap: 4px;
+            }
+
+            .numpad-btn {
+                padding: 10px 6px;
+                font-size: 0.9rem;
+            }
+
+            .quick-score-btn {
+                padding: 5px 8px;
+                font-size: 0.75rem;
             }
         }
 
@@ -1165,6 +1408,7 @@
             document.getElementById('setupScreen').classList.add('hidden');
             document.getElementById('gameScreen').classList.remove('hidden');
             document.getElementById('gameTitle').textContent = `Hra ${gameMode}`;
+            document.querySelector('.header').classList.add('game-active');
             
             renderScoreboard();
             updateCurrentThrowDisplay();
@@ -1373,6 +1617,7 @@
             document.getElementById('winnerModal').style.display = 'none';
             document.getElementById('gameScreen').classList.add('hidden');
             document.getElementById('setupScreen').classList.remove('hidden');
+            document.querySelector('.header').classList.remove('game-active');
             
             players = [];
             currentPlayerIndex = 0;
