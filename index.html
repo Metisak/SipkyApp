@@ -2,7 +2,7 @@
 <html lang="cs">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
     <title>🎯 Šipky s Kotzim</title>
     <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Rajdhani:wght@400;500;700&display=swap" rel="stylesheet">
     <style>
@@ -38,7 +38,9 @@
             background: var(--bg-dark);
             color: var(--text-primary);
             min-height: 100vh;
+            min-height: 100dvh; /* Dynamic viewport height for mobile */
             overflow-x: hidden;
+            padding-bottom: env(safe-area-inset-bottom, 20px);
         }
 
         /* Animated background */
@@ -897,6 +899,7 @@
             /* Compact input panel */
             .input-panel {
                 padding: 15px 10px;
+                padding-bottom: calc(15px + env(safe-area-inset-bottom, 15px));
                 border-radius: 12px;
             }
 
