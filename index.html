@@ -40,7 +40,6 @@
             min-height: 100vh;
             min-height: 100dvh; /* Dynamic viewport height for mobile */
             overflow-x: hidden;
-            padding-bottom: env(safe-area-inset-bottom, 20px);
         }
 
         /* Animated background */
@@ -899,7 +898,7 @@
             /* Compact input panel */
             .input-panel {
                 padding: 15px 10px;
-                padding-bottom: calc(15px + env(safe-area-inset-bottom, 15px));
+                padding-bottom: 80px; /* Extra space for mobile browser URL bar */
                 border-radius: 12px;
             }
 
