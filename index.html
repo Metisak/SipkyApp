@@ -706,6 +706,19 @@
             box-shadow: 0 0 30px rgba(0, 245, 212, 0.5);
         }
 
+        .clock-hit-btn.bonus {
+            width: 65px;
+            height: 65px;
+            font-size: 1.5rem;
+            border-color: var(--accent-gold);
+            background: rgba(255, 214, 10, 0.1);
+        }
+
+        .clock-hit-btn.bonus:hover, .clock-hit-btn.bonus:active {
+            background: var(--accent-gold);
+            box-shadow: 0 0 30px rgba(255, 214, 10, 0.5);
+        }
+
         /* Clock progress bar */
         .clock-progress {
             width: 100%;
@@ -1090,6 +1103,12 @@
                 font-size: 1.8rem;
             }
 
+            .clock-hit-btn.bonus {
+                width: 55px;
+                height: 55px;
+                font-size: 1.3rem;
+            }
+
             .clock-progress {
                 height: 6px;
             }
@@ -1285,12 +1304,18 @@
                 </div>
 
                 <div class="clock-hits">
-                    <div class="clock-hits-label">Kolik jsi trefil?</div>
+                    <div class="clock-hits-label">Kolik cílů jsi posunul? (D=2, T=3)</div>
                     <div class="clock-hits-buttons">
                         <button class="clock-hit-btn" onclick="clockHit(0)">0</button>
                         <button class="clock-hit-btn" onclick="clockHit(1)">1</button>
                         <button class="clock-hit-btn" onclick="clockHit(2)">2</button>
                         <button class="clock-hit-btn" onclick="clockHit(3)">3</button>
+                    </div>
+                    <div class="clock-hits-buttons" style="margin-top: 10px;">
+                        <button class="clock-hit-btn bonus" onclick="clockHit(4)">4</button>
+                        <button class="clock-hit-btn bonus" onclick="clockHit(5)">5</button>
+                        <button class="clock-hit-btn bonus" onclick="clockHit(6)">6</button>
+                        <button class="clock-hit-btn bonus" onclick="clockHit(7)">7+</button>
                     </div>
                 </div>
 
@@ -1836,6 +1861,15 @@
 
         function clockHit(count) {
             if (gameOver) return;
+            
+            // For 7+ button, ask for exact number
+            if (count === 7) {
+                const input = prompt('Zadej přesný počet posunů (7-21):');
+                if (input === null) return;
+                count = parseInt(input) || 7;
+                if (count < 7) count = 7;
+                if (count > 21) count = 21;
+            }
             
             const player = players[currentPlayerIndex];
             const previousTarget = player.currentTarget;
