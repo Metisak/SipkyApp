@@ -632,6 +632,102 @@
             flex-wrap: wrap;
         }
 
+        /* Around the Clock styles */
+        .clock-target {
+            text-align: center;
+            padding: 30px;
+            background: linear-gradient(135deg, rgba(0, 245, 212, 0.1), rgba(123, 44, 191, 0.1));
+            border-radius: 20px;
+            margin-bottom: 25px;
+            border: 2px solid rgba(0, 245, 212, 0.3);
+        }
+
+        .clock-target-label {
+            color: var(--text-secondary);
+            font-size: 1.1rem;
+            margin-bottom: 10px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        .clock-target-value {
+            font-family: 'Orbitron', monospace;
+            font-size: 5rem;
+            font-weight: 900;
+            color: var(--accent-gold);
+            text-shadow: 0 0 30px rgba(255, 214, 10, 0.5);
+        }
+
+        .clock-target-value.bull {
+            font-size: 3rem;
+            background: linear-gradient(135deg, var(--accent-secondary), var(--accent-gold));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .clock-hits {
+            text-align: center;
+            margin-bottom: 25px;
+        }
+
+        .clock-hits-label {
+            color: var(--text-secondary);
+            font-size: 1rem;
+            margin-bottom: 15px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .clock-hits-buttons {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+        }
+
+        .clock-hit-btn {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            border: 3px solid var(--accent-primary);
+            background: rgba(0, 245, 212, 0.1);
+            color: var(--text-primary);
+            font-family: 'Orbitron', monospace;
+            font-size: 2rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            touch-action: manipulation;
+        }
+
+        .clock-hit-btn:hover, .clock-hit-btn:active {
+            background: var(--accent-primary);
+            color: var(--bg-dark);
+            transform: scale(1.1);
+            box-shadow: 0 0 30px rgba(0, 245, 212, 0.5);
+        }
+
+        /* Clock progress bar */
+        .clock-progress {
+            width: 100%;
+            height: 8px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 4px;
+            margin: 10px 0;
+            overflow: hidden;
+        }
+
+        .clock-progress-bar {
+            height: 100%;
+            background: linear-gradient(90deg, var(--accent-primary), var(--accent-gold));
+            border-radius: 4px;
+            transition: width 0.5s ease;
+        }
+
+        .player-score.bull-target {
+            font-size: 2rem;
+            color: var(--accent-secondary);
+        }
+
         .btn-submit {
             flex: 2;
             min-width: 150px;
@@ -961,6 +1057,43 @@
                 min-width: 100px;
             }
 
+            /* Clock mode mobile styles */
+            .clock-target {
+                padding: 15px;
+                margin-bottom: 15px;
+            }
+
+            .clock-target-label {
+                font-size: 0.9rem;
+            }
+
+            .clock-target-value {
+                font-size: 3.5rem;
+            }
+
+            .clock-target-value.bull {
+                font-size: 2.2rem;
+            }
+
+            .clock-hits-label {
+                font-size: 0.9rem;
+                margin-bottom: 10px;
+            }
+
+            .clock-hits-buttons {
+                gap: 10px;
+            }
+
+            .clock-hit-btn {
+                width: 70px;
+                height: 70px;
+                font-size: 1.8rem;
+            }
+
+            .clock-progress {
+                height: 6px;
+            }
+
             /* Modal mobile */
             .modal {
                 padding: 30px 20px;
@@ -1059,13 +1192,17 @@
             <div class="setup-section">
                 <h2>Vyber variantu hry</h2>
                 <div class="game-modes">
-                    <button class="mode-btn active" data-mode="301" onclick="selectMode(301)">
+                    <button class="mode-btn active" data-mode="301" onclick="selectMode('301')">
                         301
                         <span>Rychlá hra</span>
                     </button>
-                    <button class="mode-btn" data-mode="501" onclick="selectMode(501)">
+                    <button class="mode-btn" data-mode="501" onclick="selectMode('501')">
                         501
                         <span>Klasická hra</span>
+                    </button>
+                    <button class="mode-btn" data-mode="clock" onclick="selectMode('clock')">
+                        🕐
+                        <span>Kolem hodin</span>
                     </button>
                 </div>
             </div>
@@ -1096,7 +1233,8 @@
 
             <div class="scoreboard" id="scoreboard"></div>
 
-            <div class="input-panel">
+            <!-- X01 Input Panel -->
+            <div class="input-panel" id="x01InputPanel">
                 <h3>Zadej skóre hodu</h3>
                 
                 <div class="current-throw">
@@ -1136,6 +1274,30 @@
                     <button class="btn btn-submit" onclick="submitScore()">✓ Potvrdit</button>
                 </div>
             </div>
+
+            <!-- Around the Clock Input Panel -->
+            <div class="input-panel hidden" id="clockInputPanel">
+                <h3>Kolem hodin</h3>
+                
+                <div class="clock-target">
+                    <div class="clock-target-label">Aktuální cíl</div>
+                    <div class="clock-target-value" id="clockTargetValue">1</div>
+                </div>
+
+                <div class="clock-hits">
+                    <div class="clock-hits-label">Kolik jsi trefil?</div>
+                    <div class="clock-hits-buttons">
+                        <button class="clock-hit-btn" onclick="clockHit(0)">0</button>
+                        <button class="clock-hit-btn" onclick="clockHit(1)">1</button>
+                        <button class="clock-hit-btn" onclick="clockHit(2)">2</button>
+                        <button class="clock-hit-btn" onclick="clockHit(3)">3</button>
+                    </div>
+                </div>
+
+                <div class="action-buttons">
+                    <button class="btn btn-undo" onclick="undoClockThrow()">↩ Zpět</button>
+                </div>
+            </div>
         </div>
 
         <!-- Winner Modal -->
@@ -1164,13 +1326,16 @@
 
     <script>
         // Game State
-        let gameMode = 301;
+        let gameMode = '301';
         let players = [];
         let currentPlayerIndex = 0;
         let currentScore = '';
         let round = 1;
         let gameHistory = [];
         let gameOver = false;
+
+        // Clock game targets: 1-20 and then Bull
+        const clockTargets = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 'Bull'];
 
         // Checkout combinations for hints
         const checkouts = {
@@ -1342,7 +1507,7 @@
         function selectMode(mode) {
             gameMode = mode;
             document.querySelectorAll('.mode-btn').forEach(btn => {
-                btn.classList.toggle('active', btn.dataset.mode == mode);
+                btn.classList.toggle('active', btn.dataset.mode === mode);
             });
         }
 
@@ -1399,12 +1564,20 @@
         function startGame() {
             if (players.length < 2) return;
             
-            // Reset scores
-            players.forEach(player => {
-                player.score = gameMode;
-                player.throws = [];
-                player.darts = 0;
-            });
+            // Reset scores based on game mode
+            if (gameMode === 'clock') {
+                players.forEach(player => {
+                    player.currentTarget = 0; // Index in clockTargets array
+                    player.throws = [];
+                    player.darts = 0;
+                });
+            } else {
+                players.forEach(player => {
+                    player.score = parseInt(gameMode);
+                    player.throws = [];
+                    player.darts = 0;
+                });
+            }
             
             currentPlayerIndex = 0;
             round = 1;
@@ -1414,53 +1587,105 @@
             
             document.getElementById('setupScreen').classList.add('hidden');
             document.getElementById('gameScreen').classList.remove('hidden');
-            document.getElementById('gameTitle').textContent = `Hra ${gameMode}`;
+            
+            // Set game title and show appropriate input panel
+            if (gameMode === 'clock') {
+                document.getElementById('gameTitle').textContent = 'Kolem hodin';
+                document.getElementById('x01InputPanel').classList.add('hidden');
+                document.getElementById('clockInputPanel').classList.remove('hidden');
+            } else {
+                document.getElementById('gameTitle').textContent = `Hra ${gameMode}`;
+                document.getElementById('x01InputPanel').classList.remove('hidden');
+                document.getElementById('clockInputPanel').classList.add('hidden');
+            }
+            
             document.querySelector('.header').classList.add('game-active');
             
             renderScoreboard();
             updateCurrentThrowDisplay();
+            
+            if (gameMode === 'clock') {
+                updateClockTarget();
+            }
         }
 
         // Scoreboard Rendering
         function renderScoreboard() {
             const scoreboard = document.getElementById('scoreboard');
-            scoreboard.innerHTML = players.map((player, index) => {
-                const isActive = index === currentPlayerIndex && !gameOver;
-                const isWinner = gameOver && player.score === 0;
-                const avg = player.darts > 0 ? ((gameMode - player.score) / player.darts * 3).toFixed(1) : '-';
-                const checkout = checkouts[player.score];
-                
-                return `
-                    <div class="player-card ${isActive ? 'active' : ''} ${isWinner ? 'winner' : ''}">
-                        <div class="player-card-header">
-                            <span class="player-card-name">${escapeHtml(player.name)}</span>
-                            ${isActive ? '<span class="turn-indicator">Na tahu</span>' : ''}
-                        </div>
-                        <div class="player-score">${player.score}</div>
-                        <div class="player-stats">
-                            <div class="stat">
-                                <div class="stat-value">${player.darts}</div>
-                                <div class="stat-label">Hodů</div>
+            
+            if (gameMode === 'clock') {
+                // Around the Clock scoreboard
+                scoreboard.innerHTML = players.map((player, index) => {
+                    const isActive = index === currentPlayerIndex && !gameOver;
+                    const isWinner = gameOver && player.currentTarget >= clockTargets.length;
+                    const currentTargetDisplay = player.currentTarget < clockTargets.length 
+                        ? clockTargets[player.currentTarget] 
+                        : '✓';
+                    const progress = Math.round((player.currentTarget / clockTargets.length) * 100);
+                    
+                    return `
+                        <div class="player-card ${isActive ? 'active' : ''} ${isWinner ? 'winner' : ''}">
+                            <div class="player-card-header">
+                                <span class="player-card-name">${escapeHtml(player.name)}</span>
+                                ${isActive ? '<span class="turn-indicator">Na tahu</span>' : ''}
                             </div>
-                            <div class="stat">
-                                <div class="stat-value">${avg}</div>
-                                <div class="stat-label">Průměr</div>
+                            <div class="player-score ${currentTargetDisplay === 'Bull' ? 'bull-target' : ''}">${currentTargetDisplay}</div>
+                            <div class="clock-progress">
+                                <div class="clock-progress-bar" style="width: ${progress}%"></div>
+                            </div>
+                            <div class="player-stats">
+                                <div class="stat">
+                                    <div class="stat-value">${player.darts}</div>
+                                    <div class="stat-label">Hodů</div>
+                                </div>
+                                <div class="stat">
+                                    <div class="stat-value">${player.currentTarget}/21</div>
+                                    <div class="stat-label">Cílů</div>
+                                </div>
                             </div>
                         </div>
-                        ${checkout && isActive ? `
-                            <div class="checkout-hint">
-                                <div class="checkout-hint-label">Checkout</div>
-                                <div class="checkout-hint-value">${checkout}</div>
+                    `;
+                }).join('');
+            } else {
+                // X01 scoreboard
+                scoreboard.innerHTML = players.map((player, index) => {
+                    const isActive = index === currentPlayerIndex && !gameOver;
+                    const isWinner = gameOver && player.score === 0;
+                    const avg = player.darts > 0 ? ((parseInt(gameMode) - player.score) / player.darts * 3).toFixed(1) : '-';
+                    const checkout = checkouts[player.score];
+                    
+                    return `
+                        <div class="player-card ${isActive ? 'active' : ''} ${isWinner ? 'winner' : ''}">
+                            <div class="player-card-header">
+                                <span class="player-card-name">${escapeHtml(player.name)}</span>
+                                ${isActive ? '<span class="turn-indicator">Na tahu</span>' : ''}
                             </div>
-                        ` : ''}
-                        <div class="history-list">
-                            ${player.throws.slice(-10).map(t => 
-                                `<span class="history-item ${t.bust ? 'bust' : ''}">${t.value}</span>`
-                            ).join('')}
+                            <div class="player-score">${player.score}</div>
+                            <div class="player-stats">
+                                <div class="stat">
+                                    <div class="stat-value">${player.darts}</div>
+                                    <div class="stat-label">Hodů</div>
+                                </div>
+                                <div class="stat">
+                                    <div class="stat-value">${avg}</div>
+                                    <div class="stat-label">Průměr</div>
+                                </div>
+                            </div>
+                            ${checkout && isActive ? `
+                                <div class="checkout-hint">
+                                    <div class="checkout-hint-label">Checkout</div>
+                                    <div class="checkout-hint-value">${checkout}</div>
+                                </div>
+                            ` : ''}
+                            <div class="history-list">
+                                ${player.throws.slice(-10).map(t => 
+                                    `<span class="history-item ${t.bust ? 'bust' : ''}">${t.value}</span>`
+                                ).join('')}
+                            </div>
                         </div>
-                    </div>
-                `;
-            }).join('');
+                    `;
+                }).join('');
+            }
             
             document.getElementById('roundCounter').textContent = `Kolo: ${round}`;
         }
@@ -1594,6 +1819,91 @@
             renderScoreboard();
         }
 
+        // Around the Clock functions
+        function updateClockTarget() {
+            const player = players[currentPlayerIndex];
+            const target = clockTargets[player.currentTarget];
+            const targetElement = document.getElementById('clockTargetValue');
+            
+            if (target === 'Bull') {
+                targetElement.textContent = 'Bull';
+                targetElement.classList.add('bull');
+            } else {
+                targetElement.textContent = target;
+                targetElement.classList.remove('bull');
+            }
+        }
+
+        function clockHit(count) {
+            if (gameOver) return;
+            
+            const player = players[currentPlayerIndex];
+            const previousTarget = player.currentTarget;
+            
+            // Save to history
+            gameHistory.push({
+                playerIndex: currentPlayerIndex,
+                previousTarget: previousTarget,
+                hits: count,
+                round: round
+            });
+            
+            // Update player's target
+            player.currentTarget = Math.min(player.currentTarget + count, clockTargets.length);
+            player.darts += 3;
+            player.throws.push({ 
+                value: count > 0 ? `+${count}` : '0',
+                hits: count 
+            });
+            
+            // Check for winner
+            if (player.currentTarget >= clockTargets.length) {
+                gameOver = true;
+                showClockWinner(player);
+                renderScoreboard();
+                return;
+            }
+            
+            // Next player
+            nextPlayer();
+            renderScoreboard();
+            updateClockTarget();
+        }
+
+        function undoClockThrow() {
+            if (gameHistory.length === 0) return;
+            
+            const lastAction = gameHistory.pop();
+            const player = players[lastAction.playerIndex];
+            
+            // Restore target
+            player.currentTarget = lastAction.previousTarget;
+            player.throws.pop();
+            player.darts -= 3;
+            
+            // Reset game state if was game over
+            if (gameOver) {
+                gameOver = false;
+                document.getElementById('winnerModal').style.display = 'none';
+            }
+            
+            // Go back to that player
+            currentPlayerIndex = lastAction.playerIndex;
+            
+            // Recalculate round
+            recalculateRound();
+            
+            renderScoreboard();
+            updateClockTarget();
+        }
+
+        function showClockWinner(player) {
+            document.getElementById('winnerName').textContent = player.name;
+            document.getElementById('winnerDarts').textContent = player.darts;
+            document.getElementById('winnerAvg').textContent = '-';
+            document.getElementById('winnerModal').style.display = 'flex';
+        }
+
         function recalculateRound() {
             const totalThrows = players.reduce((sum, p) => sum + p.throws.length, 0);
             round = Math.floor(totalThrows / players.length) + 1;
@@ -1626,6 +1936,10 @@
             document.getElementById('setupScreen').classList.remove('hidden');
             document.querySelector('.header').classList.remove('game-active');
             
+            // Reset input panels
+            document.getElementById('x01InputPanel').classList.remove('hidden');
+            document.getElementById('clockInputPanel').classList.add('hidden');
+            
             players = [];
             currentPlayerIndex = 0;
             round = 1;
@@ -1641,11 +1955,19 @@
         function playAgain() {
             document.getElementById('winnerModal').style.display = 'none';
             
-            players.forEach(player => {
-                player.score = gameMode;
-                player.throws = [];
-                player.darts = 0;
-            });
+            if (gameMode === 'clock') {
+                players.forEach(player => {
+                    player.currentTarget = 0;
+                    player.throws = [];
+                    player.darts = 0;
+                });
+            } else {
+                players.forEach(player => {
+                    player.score = parseInt(gameMode);
+                    player.throws = [];
+                    player.darts = 0;
+                });
+            }
             
             currentPlayerIndex = 0;
             round = 1;
@@ -1655,6 +1977,10 @@
             
             updateCurrentThrowDisplay();
             renderScoreboard();
+            
+            if (gameMode === 'clock') {
+                updateClockTarget();
+            }
         }
 
         // Utility
