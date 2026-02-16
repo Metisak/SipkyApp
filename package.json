@@ -1,0 +1,31 @@
+{
+  "name": "sipkyapp",
+  "version": "1.0.0",
+  "description": "Moderní webová aplikace pro počítání bodů ve hře šipek s podporou variant **301** a **501**.",
+  "main": "index.js",
+  "scripts": {
+    "sync": "npx cap sync android",
+    "open": "npx cap open android",
+    "build": "npx cap sync android"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Metisak/SipkyApp.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "bugs": {
+    "url": "https://github.com/Metisak/SipkyApp/issues"
+  },
+  "homepage": "https://github.com/Metisak/SipkyApp#readme",
+  "dependencies": {
+    "@capacitor/android": "^8.1.0",
+    "@capacitor/camera": "^8.0.1",
+    "@capacitor/cli": "^8.1.0",
+    "@capacitor/core": "^8.1.0",
+    "@capacitor/splash-screen": "^8.0.1",
+    "@capacitor/status-bar": "^8.0.1"
+  }
+}

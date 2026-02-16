@@ -1,0 +1,22 @@
+# Dependencies
+node_modules/
+
+# Android build files (except the APK we want to keep)
+android/.gradle/
+android/app/build/intermediates/
+android/app/build/tmp/
+android/app/build/generated/
+android/app/build/kotlin/
+android/build/
+android/local.properties
+android/.idea/
+
+# Keep the APK
+!android/app/build/outputs/
+!android/app/build/outputs/apk/
+!android/app/build/outputs/apk/debug/
+!android/app/build/outputs/apk/debug/app-debug.apk
+
+# OS files
+.DS_Store
+Thumbs.db
