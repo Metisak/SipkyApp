@@ -543,6 +543,8 @@
             border-radius: var(--border-radius);
             padding: 30px;
             border: 1px solid rgba(0, 245, 212, 0.1);
+            position: relative;
+            overflow: hidden;
         }
 
         .input-panel h3 {
@@ -1640,6 +1642,151 @@
             }
         }
 
+        /* ===== Bot Styles ===== */
+        .bot-add-section {
+            margin-top: 15px;
+            padding-top: 15px;
+            border-top: 1px solid rgba(0,245,212,0.1);
+        }
+
+        .bot-add-label {
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+            margin-bottom: 10px;
+            text-align: center;
+        }
+
+        .bot-difficulty-btns {
+            display: flex;
+            gap: 8px;
+        }
+
+        .bot-diff-btn {
+            flex: 1;
+            padding: 12px 8px;
+            border: 2px solid rgba(0,245,212,0.15);
+            border-radius: 10px;
+            background: var(--bg-dark);
+            color: var(--text-primary);
+            font-family: 'Rajdhani', sans-serif;
+            font-size: 0.85rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-align: center;
+            touch-action: manipulation;
+        }
+
+        .bot-diff-btn:hover {
+            transform: translateY(-2px);
+        }
+
+        .bot-diff-btn.easy {
+            border-color: rgba(0,245,147,0.3);
+        }
+        .bot-diff-btn.easy:hover {
+            background: rgba(0,245,147,0.15);
+            border-color: var(--success);
+            color: var(--success);
+        }
+
+        .bot-diff-btn.medium {
+            border-color: rgba(255,214,10,0.3);
+        }
+        .bot-diff-btn.medium:hover {
+            background: rgba(255,214,10,0.15);
+            border-color: var(--accent-gold);
+            color: var(--accent-gold);
+        }
+
+        .bot-diff-btn.hard {
+            border-color: rgba(247,37,133,0.3);
+        }
+        .bot-diff-btn.hard:hover {
+            background: rgba(247,37,133,0.15);
+            border-color: var(--accent-secondary);
+            color: var(--accent-secondary);
+        }
+
+        .bot-diff-btn span {
+            display: block;
+            font-size: 0.7rem;
+            font-weight: 400;
+            color: var(--text-secondary);
+            margin-top: 2px;
+        }
+
+        .player-item.bot-player {
+            border-color: rgba(123,44,191,0.3);
+        }
+
+        .player-item .bot-badge {
+            font-size: 0.65rem;
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .bot-badge.easy { background: rgba(0,245,147,0.2); color: var(--success); }
+        .bot-badge.medium { background: rgba(255,214,10,0.2); color: var(--accent-gold); }
+        .bot-badge.hard { background: rgba(247,37,133,0.2); color: var(--accent-secondary); }
+
+        .bot-thinking-overlay {
+            position: absolute;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            background: rgba(10,10,15,0.85);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            z-index: 50;
+            border-radius: var(--border-radius);
+        }
+
+        .bot-thinking-text {
+            font-family: 'Orbitron', monospace;
+            font-size: 1.2rem;
+            color: var(--accent-purple);
+            margin-bottom: 15px;
+        }
+
+        .bot-thinking-dots {
+            display: flex;
+            gap: 8px;
+        }
+
+        .bot-thinking-dots span {
+            width: 10px;
+            height: 10px;
+            background: var(--accent-purple);
+            border-radius: 50%;
+            animation: botDot 1.2s ease-in-out infinite;
+        }
+
+        .bot-thinking-dots span:nth-child(2) { animation-delay: 0.2s; }
+        .bot-thinking-dots span:nth-child(3) { animation-delay: 0.4s; }
+
+        @keyframes botDot {
+            0%, 100% { opacity: 0.3; transform: scale(0.8); }
+            50% { opacity: 1; transform: scale(1.2); }
+        }
+
+        .bot-score-reveal {
+            font-family: 'Orbitron', monospace;
+            font-size: 2.5rem;
+            color: var(--accent-primary);
+            margin-top: 15px;
+            animation: botReveal 0.5s ease-out;
+        }
+
+        @keyframes botReveal {
+            from { opacity: 0; transform: scale(0.5); }
+            to { opacity: 1; transform: scale(1); }
+        }
+
         /* ===== Camera Dart Detection Styles ===== */
         .camera-toggle-btn {
             padding: 10px 20px;
@@ -2038,6 +2185,14 @@
                     <button class="btn btn-add" onclick="addPlayer()">+</button>
                 </div>
                 <div class="players-list" id="playersList"></div>
+                <div class="bot-add-section">
+                    <div class="bot-add-label">nebo pridej bota:</div>
+                    <div class="bot-difficulty-btns">
+                        <button class="bot-diff-btn easy" onclick="addBot('easy')">Snadny<span>avg ~30</span></button>
+                        <button class="bot-diff-btn medium" onclick="addBot('medium')">Stredni<span>avg ~55</span></button>
+                        <button class="bot-diff-btn hard" onclick="addBot('hard')">Tezky<span>avg ~75</span></button>
+                    </div>
+                </div>
             </div>
 
             <button class="btn btn-primary start-game-btn" onclick="startGame()" id="startGameBtn" disabled>
@@ -2085,6 +2240,11 @@
 
             <!-- X01 Input Panel -->
             <div class="input-panel" id="x01InputPanel">
+                <div class="bot-thinking-overlay hidden" id="botThinkingX01">
+                    <div class="bot-thinking-text">Bot premysli...</div>
+                    <div class="bot-thinking-dots"><span></span><span></span><span></span></div>
+                    <div class="bot-score-reveal hidden" id="botScoreRevealX01"></div>
+                </div>
                 <h3>Zadej skóre hodu</h3>
                 
                 <div class="current-throw">
@@ -2127,6 +2287,11 @@
 
             <!-- Around the Clock Input Panel -->
             <div class="input-panel hidden" id="clockInputPanel">
+                <div class="bot-thinking-overlay hidden" id="botThinkingClock">
+                    <div class="bot-thinking-text">Bot premysli...</div>
+                    <div class="bot-thinking-dots"><span></span><span></span><span></span></div>
+                    <div class="bot-score-reveal hidden" id="botScoreRevealClock"></div>
+                </div>
                 <h3>Kolem hodin</h3>
                 
                 <div class="clock-target">
@@ -2262,6 +2427,181 @@
 
         // Clock game targets: 1-20 and then Bull
         const clockTargets = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 'Bull'];
+
+        // ===== DART BOT ENGINE =====
+        const DartBot = {
+            DIFFICULTY: {
+                easy:   { avg: 30, stdDev: 15, min: 0,  max: 60,  checkoutChance: 0.20, name: 'Snadny' },
+                medium: { avg: 55, stdDev: 18, min: 15, max: 105, checkoutChance: 0.40, name: 'Stredni' },
+                hard:   { avg: 75, stdDev: 20, min: 30, max: 145, checkoutChance: 0.70, name: 'Tezky' }
+            },
+
+            _boxMuller() {
+                let u1 = Math.random();
+                let u2 = Math.random();
+                while (u1 === 0) u1 = Math.random();
+                return Math.sqrt(-2.0 * Math.log(u1)) * Math.cos(2.0 * Math.PI * u2);
+            },
+
+            _clamp(val, min, max) {
+                return Math.max(min, Math.min(max, Math.round(val)));
+            },
+
+            generateScore(difficulty, remainingScore) {
+                const cfg = this.DIFFICULTY[difficulty];
+                if (!cfg) return 26;
+
+                // Checkout zone
+                if (remainingScore <= 170 && remainingScore >= 2) {
+                    return this._handleCheckout(cfg, remainingScore);
+                }
+
+                // Normal throw
+                const raw = cfg.avg + this._boxMuller() * cfg.stdDev;
+                let score = this._clamp(raw, cfg.min, cfg.max);
+
+                // Ensure we don't bust
+                if (score >= remainingScore || remainingScore - score === 1) {
+                    score = this._clamp(remainingScore * 0.3 + this._boxMuller() * 10, cfg.min, Math.min(remainingScore - 2, cfg.max));
+                    if (score < 0) score = 0;
+                    if (remainingScore - score === 1) score = Math.max(0, score - 1);
+                }
+
+                // Hard bot special: occasional big scores
+                if (difficulty === 'hard' && Math.random() < 0.08) {
+                    score = this._clamp(140 + Math.random() * 40, 140, 180);
+                    if (score >= remainingScore || remainingScore - score === 1) {
+                        score = Math.max(0, remainingScore - 2);
+                    }
+                }
+
+                return Math.max(0, score);
+            },
+
+            _handleCheckout(cfg, remaining) {
+                const canCheckout = remaining >= 2 && remaining <= 170 && remaining !== 1;
+
+                if (canCheckout && Math.random() < cfg.checkoutChance) {
+                    return remaining;
+                }
+
+                // Didn't checkout -- throw partial score, avoid bust
+                const partial = cfg.avg * (0.4 + Math.random() * 0.4);
+                let score = this._clamp(partial, 0, remaining - 2);
+                if (remaining - score === 1) score = Math.max(0, score - 1);
+                return score;
+            },
+
+            generateClockHits(difficulty) {
+                const cfg = this.DIFFICULTY[difficulty];
+                const rand = Math.random();
+                if (difficulty === 'easy') {
+                    if (rand < 0.35) return 0;
+                    if (rand < 0.70) return 1;
+                    if (rand < 0.90) return 2;
+                    return 3;
+                } else if (difficulty === 'medium') {
+                    if (rand < 0.15) return 0;
+                    if (rand < 0.50) return 1;
+                    if (rand < 0.80) return 2;
+                    if (rand < 0.95) return 3;
+                    return Math.floor(Math.random() * 2) + 4;
+                } else {
+                    if (rand < 0.05) return 0;
+                    if (rand < 0.25) return 1;
+                    if (rand < 0.55) return 2;
+                    if (rand < 0.80) return 3;
+                    if (rand < 0.95) return Math.floor(Math.random() * 2) + 4;
+                    return Math.floor(Math.random() * 3) + 5;
+                }
+            }
+        };
+
+        let botPlayTimeout = null;
+
+        function addBot(difficulty) {
+            if (players.length >= 8) return;
+            const cfg = DartBot.DIFFICULTY[difficulty];
+            const botNum = players.filter(p => p.isBot).length + 1;
+            players.push({
+                name: 'Bot ' + botNum + ' (' + cfg.name + ')',
+                score: gameMode,
+                throws: [],
+                darts: 0,
+                isBot: true,
+                botDifficulty: difficulty
+            });
+            renderPlayersList();
+            updateStartButton();
+        }
+
+        function checkBotTurn() {
+            if (gameOver) return;
+            const player = players[currentPlayerIndex];
+            if (!player || !player.isBot) return;
+
+            const delay = 1000 + Math.random() * 1000;
+
+            // Show thinking overlay
+            showBotThinking(true);
+
+            botPlayTimeout = setTimeout(() => {
+                if (gameMode === 'clock') {
+                    botPlayClock(player);
+                } else {
+                    botPlayX01(player);
+                }
+            }, delay);
+        }
+
+        function botPlayX01(player) {
+            const score = DartBot.generateScore(player.botDifficulty, player.score);
+
+            // Show score reveal
+            const revealEl = document.getElementById('botScoreRevealX01');
+            revealEl.textContent = score;
+            revealEl.classList.remove('hidden');
+
+            setTimeout(() => {
+                showBotThinking(false);
+                currentScore = score.toString();
+                updateCurrentThrowDisplay();
+                submitScore();
+            }, 800);
+        }
+
+        function botPlayClock(player) {
+            const hits = DartBot.generateClockHits(player.botDifficulty);
+
+            const revealEl = document.getElementById('botScoreRevealClock');
+            revealEl.textContent = hits > 0 ? '+' + hits : '0';
+            revealEl.classList.remove('hidden');
+
+            setTimeout(() => {
+                showBotThinking(false);
+                clockHit(hits);
+            }, 800);
+        }
+
+        function showBotThinking(show) {
+            const x01Overlay = document.getElementById('botThinkingX01');
+            const clockOverlay = document.getElementById('botThinkingClock');
+            const revealX01 = document.getElementById('botScoreRevealX01');
+            const revealClock = document.getElementById('botScoreRevealClock');
+
+            if (show) {
+                if (gameMode === 'clock') {
+                    clockOverlay.classList.remove('hidden');
+                    revealClock.classList.add('hidden');
+                } else {
+                    x01Overlay.classList.remove('hidden');
+                    revealX01.classList.add('hidden');
+                }
+            } else {
+                x01Overlay.classList.add('hidden');
+                clockOverlay.classList.add('hidden');
+            }
+        }
 
         // ===== STATS MANAGER =====
         const StatsManager = {
@@ -2859,10 +3199,11 @@
         function renderPlayersList() {
             const list = document.getElementById('playersList');
             list.innerHTML = players.map((player, index) => `
-                <div class="player-item">
+                <div class="player-item ${player.isBot ? 'bot-player' : ''}">
                     <span class="player-name">
                         <span class="player-number">${index + 1}</span>
                         ${escapeHtml(player.name)}
+                        ${player.isBot ? `<span class="bot-badge ${player.botDifficulty}">BOT</span>` : ''}
                     </span>
                     <button class="btn-remove" onclick="removePlayer(${index})">×</button>
                 </div>
@@ -2923,6 +3264,9 @@
             if (gameMode === 'clock') {
                 updateClockTarget();
             }
+
+            // If first player is a bot, start bot turn
+            checkBotTurn();
         }
 
         // Scoreboard Rendering
@@ -3077,6 +3421,8 @@
             currentScore = '';
             updateCurrentThrowDisplay();
             renderScoreboard();
+
+            if (!gameOver) checkBotTurn();
         }
 
         // Record Bust
@@ -3100,10 +3446,14 @@
             updateCurrentThrowDisplay();
             nextPlayer();
             renderScoreboard();
+
+            if (!gameOver) checkBotTurn();
         }
 
         // Undo Last Throw
         function undoLastThrow() {
+            if (botPlayTimeout) { clearTimeout(botPlayTimeout); botPlayTimeout = null; }
+            showBotThinking(false);
             if (gameHistory.length === 0) return;
             
             const lastAction = gameHistory.pop();
@@ -3184,9 +3534,13 @@
             nextPlayer();
             renderScoreboard();
             updateClockTarget();
+
+            if (!gameOver) checkBotTurn();
         }
 
         function undoClockThrow() {
+            if (botPlayTimeout) { clearTimeout(botPlayTimeout); botPlayTimeout = null; }
+            showBotThinking(false);
             if (gameHistory.length === 0) return;
             
             const lastAction = gameHistory.pop();
@@ -3300,6 +3654,9 @@
 
         // Reset Game
         function resetGame() {
+            if (botPlayTimeout) { clearTimeout(botPlayTimeout); botPlayTimeout = null; }
+            showBotThinking(false);
+
             document.getElementById('winnerModal').style.display = 'none';
             document.getElementById('gameScreen').classList.add('hidden');
             document.getElementById('setupScreen').classList.remove('hidden');
@@ -3322,6 +3679,9 @@
 
         // Play Again (same players)
         function playAgain() {
+            if (botPlayTimeout) { clearTimeout(botPlayTimeout); botPlayTimeout = null; }
+            showBotThinking(false);
+
             document.getElementById('winnerModal').style.display = 'none';
             
             if (gameMode === 'clock') {
@@ -3350,6 +3710,8 @@
             if (gameMode === 'clock') {
                 updateClockTarget();
             }
+
+            checkBotTurn();
         }
 
         // Utility
