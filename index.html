@@ -4,9 +4,6 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
     <title>🎯 Šipky s Kotzim</title>
-    <link rel="icon" type="image/x-icon" href="favicon.ico">
-    <link rel="icon" type="image/png" sizes="32x32" href="favicon.png">
-    <link rel="apple-touch-icon" sizes="180x180" href="apple-touch-icon.png">
     <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Rajdhani:wght@400;500;700&display=swap" rel="stylesheet">
     <style>
         :root {
@@ -861,6 +858,8 @@
         @media (max-width: 768px) {
             .container {
                 padding: 8px;
+                padding-top: calc(env(safe-area-inset-top, 0px) + 20px);
+                padding-bottom: calc(env(safe-area-inset-bottom, 0px) + 16px);
             }
 
             .header {
@@ -1012,7 +1011,7 @@
             /* Compact input panel */
             .input-panel {
                 padding: 15px 10px;
-                padding-bottom: 80px; /* Extra space for mobile browser URL bar */
+                padding-bottom: calc(env(safe-area-inset-bottom, 0px) + 20px);
                 border-radius: 12px;
             }
 
@@ -2543,7 +2542,7 @@
             const player = players[currentPlayerIndex];
             if (!player || !player.isBot) return;
 
-            const delay = 1000 + Math.random() * 1000;
+            const delay = 3000 + Math.random() * 2000;
 
             // Show thinking overlay
             showBotThinking(true);
@@ -2567,6 +2566,7 @@
 
             setTimeout(() => {
                 showBotThinking(false);
+                VoiceAnnouncer.speak(`Bot hodil ${score}`);
                 currentScore = score.toString();
                 updateCurrentThrowDisplay();
                 submitScore();
@@ -2582,6 +2582,8 @@
 
             setTimeout(() => {
                 showBotThinking(false);
+                if (hits > 0) VoiceAnnouncer.speak(`Bot trefil ${hits}`);
+                else VoiceAnnouncer.speak(`Bot netrefil`);
                 clockHit(hits);
             }, 800);
         }
@@ -2605,6 +2607,65 @@
                 clockOverlay.classList.add('hidden');
             }
         }
+
+        // ===== VOICE ANNOUNCER =====
+        const VoiceAnnouncer = {
+            speak(text) {
+                // Capacitor native TTS – funguje v Android WebView
+                if (window.Capacitor && window.Capacitor.Plugins && window.Capacitor.Plugins.TextToSpeech) {
+                    window.Capacitor.Plugins.TextToSpeech.speak({
+                        text: text,
+                        lang: 'cs-CZ',
+                        rate: 0.95,
+                        pitch: 0.75,
+                        volume: 1.0,
+                    }).catch(e => console.warn('TTS error:', e));
+                    return;
+                }
+                // Fallback – Web Speech API (desktop prohlížeč)
+                if (!window.speechSynthesis) return;
+                window.speechSynthesis.cancel();
+                const u = new SpeechSynthesisUtterance(text);
+                u.lang = 'cs-CZ';
+                u.rate = 0.95;
+                u.pitch = 0.75;
+                const voices = window.speechSynthesis.getVoices();
+                const voice = voices.find(v => v.lang.startsWith('cs') && /male|muž/i.test(v.name))
+                    || voices.find(v => v.lang.startsWith('cs'))
+                    || null;
+                if (voice) u.voice = voice;
+                window.speechSynthesis.speak(u);
+            }
+        };
+
+        // ===== SCREEN WAKE LOCK =====
+        const ScreenWakeLock = {
+            _webLock: null,
+            async enable() {
+                if (window.Capacitor?.Plugins?.KeepAwake) {
+                    window.Capacitor.Plugins.KeepAwake.keepAwake().catch(console.warn);
+                    return;
+                }
+                if (navigator.wakeLock) {
+                    this._webLock = await navigator.wakeLock.request('screen').catch(console.warn);
+                }
+            },
+            async disable() {
+                if (window.Capacitor?.Plugins?.KeepAwake) {
+                    window.Capacitor.Plugins.KeepAwake.allowSleep().catch(console.warn);
+                    return;
+                }
+                if (this._webLock) {
+                    await this._webLock.release().catch(console.warn);
+                    this._webLock = null;
+                }
+            }
+        };
+        ScreenWakeLock.enable();
+        document.addEventListener('visibilitychange', () => {
+            if (document.visibilityState === 'visible') ScreenWakeLock.enable();
+            else ScreenWakeLock.disable();
+        });
 
         // ===== STATS MANAGER =====
         const StatsManager = {
@@ -2787,9 +2848,20 @@
             const active = StatsManager.getActivePlayer();
             if (active) {
                 showActiveProfile(active);
+                autoAddActivePlayer();
             } else {
                 document.getElementById('profileModal').classList.remove('hidden');
             }
+        }
+
+        function autoAddActivePlayer() {
+            const active = StatsManager.getActivePlayer();
+            if (!active) return;
+            const alreadyAdded = players.some(p => !p.isBot && p.name === active);
+            if (alreadyAdded) return;
+            players.push({ name: active, score: gameMode, throws: [], darts: 0 });
+            renderPlayersList();
+            updateStartButton();
         }
 
         function saveProfile() {
@@ -3410,6 +3482,7 @@
             
             // Update player
             player.score = newScore;
+            if (!player.isBot) VoiceAnnouncer.speak(`Hodil jsi ${score}`);
             player.throws.push({ value: score, bust: false });
             player.darts += 3;
             
@@ -3507,6 +3580,10 @@
             if (gameOver) return;
             
             const player = players[currentPlayerIndex];
+            if (!player.isBot) {
+                if (count > 0) VoiceAnnouncer.speak(`Trefil jsi ${count}`);
+                else VoiceAnnouncer.speak(`Netrefil jsi`);
+            }
             const previousTarget = player.currentTarget;
             
             // Save to history
@@ -3676,6 +3753,7 @@
             gameOver = false;
             currentScore = '';
             
+            autoAddActivePlayer();
             renderPlayersList();
             updateStartButton();
         }
